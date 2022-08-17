@@ -33,6 +33,9 @@ jobs:
     - name: Build with assembleRelease
       run: ./gradlew assembleRelease
       
+    - name: Search apk
+      run: cd /home/runner/work/LinphoneCall/LinphoneCall/app/build/outputs/apk/release && ls
+      
     - uses: actions/upload-artifact@v2
       with:
         name: ${{ github.event.inputs.name }}_${{ github.event.inputs.version }}.apk
