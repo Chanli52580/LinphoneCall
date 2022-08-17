@@ -1,10 +1,16 @@
 name: Android CI
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  workflow_dispatch:
+   inputs:
+      version:
+        description: 'app version'
+        required: true
+        default: '1.0'
+      name:
+        description: 'app name'
+        required: false
+        default: 'game_space'
 
 jobs:
   build:
@@ -12,15 +18,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
     - name: set up JDK 11
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v2
       with:
         java-version: '11'
-        distribution: 'temurin'
+        distribution: 'adopt'
         cache: gradle
 
+  
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
+
+    - name: Build with assembleRelease
+      run: ./gradlew assembleRelease
+      
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ github.event.inputs.name }}_${{ github.event.inputs.version }}.apk
+        path: /home/runner/work/LinphoneCall/LinphoneCall/app/build/outputs/apk/release/app-release.apk
